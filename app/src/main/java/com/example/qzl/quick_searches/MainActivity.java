@@ -2,8 +2,11 @@ package com.example.qzl.quick_searches;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
+import android.view.View;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -13,6 +16,7 @@ public class MainActivity extends Activity {
     private QuickIndexBar quickindexbar;
     private ListView lv_mainactivity_data;
     private ArrayList<Friend> friends = new ArrayList<Friend>();
+    private TextView tv_mainactivity_flag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,6 +24,7 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
         quickindexbar = (QuickIndexBar) findViewById(R.id.quickindexbar);
         lv_mainactivity_data = (ListView) findViewById(R.id.lv_mainactivity_data);
+        tv_mainactivity_flag = (TextView) findViewById(R.id.tv_mainactivity_flag);
         //初始化数据
         initData();
 
@@ -35,10 +40,41 @@ public class MainActivity extends Activity {
         quickindexbar.setOnTouchLetterListener(new QuickIndexBar.OnTouchLetterListener() {
             @Override
             public void onTouchLetter(String letter) {
-                Log.d("tag","letter = "+letter);
+//                Log.d("tag","letter = "+letter);
+                //根据当前触摸的首字母，去集合中找那个item的首字母和letter的首字母一样，然后将对应的item放到屏幕顶端
+                for (int i = 0; i < friends.size(); i++) {
+                    //获取当前首字母
+                    String firstWord = friends.get(i).getPinyin().charAt(0)+"";
+                    if (letter.equals(firstWord)){
+                        //说明找到了，那么应该蒋当前的item放到屏幕顶端
+                        lv_mainactivity_data.setSelection(i);
+                        break;//只需要找到第一个就成
+                    }
+                }
+                //显示当前触摸的字母
+                showCurrentWord(letter);
             }
         });
 
+    }
+
+    private Handler handler = new Handler();
+    /**
+     * 显示当前触摸字母
+     * @param letter
+     */
+    private void showCurrentWord(String letter) {
+        tv_mainactivity_flag.setVisibility(View.VISIBLE);
+        tv_mainactivity_flag.setText(letter);
+        //先移出之前的任务
+        handler.removeCallbacksAndMessages(null);
+        //延时隐藏CurrentWord
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                tv_mainactivity_flag.setVisibility(View.GONE);
+            }
+        },1500);
     }
 
     private void fillList() {

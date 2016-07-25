@@ -26,8 +26,8 @@ public class MyAdapter extends BaseAdapter {
     }
 
     @Override
-    public Object getItem(int i) {
-        return list.get(i);
+    public Object getItem(int position) {
+        return list.get(position);
     }
 
     @Override
@@ -36,15 +36,32 @@ public class MyAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int i, View view, ViewGroup viewGroup) {
+    public View getView(int position, View view, ViewGroup viewGroup) {
         if (view == null){
             view = View.inflate(context,R.layout.adapter_friend,null);
         }
         ViewHolder holder = ViewHolder.getHolder(view);
         //设置数据
-        Friend friend = list.get(i);
+        Friend friend = list.get(position);
         holder.tv_mainactivity_name.setText(friend.getName());
-        holder.tv_mainactivity_first_worid.setText(PinYinUtil.getPinYin(friend.getName()));
+        String currentWord = friend.getPinyin().charAt(0)+"";
+        if (position > 0){
+            //获取上一个item的首字母
+            String lastWord = list.get(position-1).getPinyin().charAt(0)+"";
+            //拿当前的首字母和上一个字母比较
+            if (currentWord.equals(lastWord)){
+                //说明首字母相同，需要隐藏当前item的first_word
+                holder.tv_mainactivity_first_worid.setVisibility(View.GONE);
+            }else {
+                //不一样，需要显示当前的首字母
+                //由于布局是复用的，所以在需要显示的时候，需再次将tv_mainactivity_first_worid设置为可见
+                holder.tv_mainactivity_first_worid.setVisibility(View.VISIBLE);
+                holder.tv_mainactivity_first_worid.setText(currentWord);
+            }
+        }else {
+            holder.tv_mainactivity_first_worid.setVisibility(View.VISIBLE);
+            holder.tv_mainactivity_first_worid.setText(currentWord);
+        }
         return view;
     }
     static class ViewHolder{
