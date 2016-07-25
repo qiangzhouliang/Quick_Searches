@@ -21,11 +21,10 @@
         android:layout_width="110dp"
         android:layout_height="110dp"
         android:background="@drawable/bg"
-        android:text="A"
         android:textSize="50dp"
         android:textColor="#fff"
         android:textStyle="bold"
         android:gravity="center"
         android:layout_centerInParent="true"
-        android:visibility="invisible"/>
+        />
 </RelativeLayout>

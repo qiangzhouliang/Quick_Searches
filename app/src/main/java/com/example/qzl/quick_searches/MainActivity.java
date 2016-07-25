@@ -5,8 +5,12 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.OvershootInterpolator;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import com.nineoldandroids.view.ViewHelper;
+import com.nineoldandroids.view.ViewPropertyAnimator;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -17,6 +21,7 @@ public class MainActivity extends Activity {
     private ListView lv_mainactivity_data;
     private ArrayList<Friend> friends = new ArrayList<Friend>();
     private TextView tv_mainactivity_flag;
+    private boolean isScale = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +61,9 @@ public class MainActivity extends Activity {
             }
         });
 
+        //通过缩小CurrentWord来隐藏
+        ViewHelper.setScaleX(tv_mainactivity_flag,0);
+        ViewHelper.setScaleY(tv_mainactivity_flag,0);
     }
 
     private Handler handler = new Handler();
@@ -64,15 +72,27 @@ public class MainActivity extends Activity {
      * @param letter
      */
     private void showCurrentWord(String letter) {
-        tv_mainactivity_flag.setVisibility(View.VISIBLE);
         tv_mainactivity_flag.setText(letter);
+        if (!isScale){
+            isScale = true;
+            //ViewPropertyAnimator:做特效非常好
+            ViewPropertyAnimator.animate(tv_mainactivity_flag).scaleX(1f)
+                    .setInterpolator(new OvershootInterpolator())
+                    .setDuration(450).start();
+            ViewPropertyAnimator.animate(tv_mainactivity_flag).scaleY(1f)
+                    .setInterpolator(new OvershootInterpolator())
+                    .setDuration(450).start();
+        }
+
         //先移出之前的任务
         handler.removeCallbacksAndMessages(null);
         //延时隐藏CurrentWord
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                tv_mainactivity_flag.setVisibility(View.GONE);
+                ViewPropertyAnimator.animate(tv_mainactivity_flag).scaleX(0f).setDuration(450).start();
+                ViewPropertyAnimator.animate(tv_mainactivity_flag).scaleY(0f).setDuration(450).start();
+                isScale = false;
             }
         },1500);
     }
