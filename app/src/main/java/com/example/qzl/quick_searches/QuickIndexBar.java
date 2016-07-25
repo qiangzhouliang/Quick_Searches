@@ -6,7 +6,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -41,7 +40,7 @@ public class QuickIndexBar extends View {
     private void init(){
         paint = new Paint(Paint.ANTI_ALIAS_FLAG);//设置抗锯齿
         paint.setColor(Color.WHITE);
-        paint.setTextSize(16);
+        paint.setTextSize(18);
         paint.setTextAlign(Paint.Align.CENTER);//设置文本的起点是底边的中心
     }
 
@@ -60,6 +59,8 @@ public class QuickIndexBar extends View {
         for (int i = 0; i < indexArr.length; i++) {
             float x = width/2;
             float y = cellHeight/2 + getTextHeight(indexArr[i])/2 + i * cellHeight;
+            //如果被选中的时候改变颜色
+            paint.setColor(lastIndex == i?Color.BLACK:Color.WHITE);
             //文字绘制起点默认在文字的左下脚
             canvas.drawText(indexArr[i],x,y,paint);
         }
@@ -89,6 +90,8 @@ public class QuickIndexBar extends View {
                 lastIndex = -1;
                 break;
         }
+        //引起重绘
+        invalidate();
         return true;
     }
 
