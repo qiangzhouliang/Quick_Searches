@@ -6,6 +6,7 @@ import android.util.Log;
 import android.widget.ListView;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class MainActivity extends Activity {
 
@@ -19,9 +20,17 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
         quickindexbar = (QuickIndexBar) findViewById(R.id.quickindexbar);
         lv_mainactivity_data = (ListView) findViewById(R.id.lv_mainactivity_data);
+        //初始化数据
+        initData();
+
+    }
+
+    private void initData() {
         //1 准备数据
         fillList();
-        //2 设置adapter
+        //2 对数据进行排序
+        Collections.sort(friends);
+        //3 设置adapter
         lv_mainactivity_data.setAdapter(new MyAdapter(getApplicationContext(),friends));
         quickindexbar.setOnTouchLetterListener(new QuickIndexBar.OnTouchLetterListener() {
             @Override
@@ -29,7 +38,9 @@ public class MainActivity extends Activity {
                 Log.d("tag","letter = "+letter);
             }
         });
+
     }
+
     private void fillList() {
         // 虚拟数据
         friends.add(new Friend("李伟"));

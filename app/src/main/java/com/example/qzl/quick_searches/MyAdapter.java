@@ -44,11 +44,11 @@ public class MyAdapter extends BaseAdapter {
         //设置数据
         Friend friend = list.get(i);
         holder.tv_mainactivity_name.setText(friend.getName());
+        holder.tv_mainactivity_first_worid.setText(PinYinUtil.getPinYin(friend.getName()));
         return view;
     }
     static class ViewHolder{
         TextView tv_mainactivity_first_worid,tv_mainactivity_name;
-
         public ViewHolder(View view) {
             tv_mainactivity_first_worid = (TextView) view.findViewById(R.id.tv_mainactivity_first_worid);
             tv_mainactivity_name = (TextView) view.findViewById(R.id.tv_mainactivity_name);
