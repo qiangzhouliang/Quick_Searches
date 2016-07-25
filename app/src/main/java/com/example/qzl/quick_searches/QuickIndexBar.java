@@ -6,6 +6,8 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 
 /**
@@ -18,6 +20,8 @@ public class QuickIndexBar extends View {
     private Paint paint;
     private int width;
     private float cellHeight;
+    private int lastIndex = -1;//记录上次的触摸字母的索引
+    private OnTouchLetterListener listener;//触摸字母监听
 
     public QuickIndexBar(Context context) {
         super(context);
@@ -61,6 +65,33 @@ public class QuickIndexBar extends View {
         }
     }
 
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        switch (event.getAction()){
+            case MotionEvent.ACTION_DOWN://按下
+            case MotionEvent.ACTION_MOVE://移动
+                float y = event.getY();
+                int index = (int) (y/cellHeight);//得到对应字母的索引
+                if (lastIndex != index) {
+                    //说明当前触摸字母和上一个不是同一个字母
+//                    Log.d("tag", "index = " + indexArr[index]);
+                    //对index做安全性的检查
+                    if (index >= 0 && index < indexArr.length){
+                        if (listener != null){
+                            listener.onTouchLetter(indexArr[index]);
+                        }
+                    }
+                }
+                lastIndex = index;
+                break;
+            case MotionEvent.ACTION_UP://抬起
+                //重置lastIndex
+                lastIndex = -1;
+                break;
+        }
+        return true;
+    }
+
     /**
      * 获取文本高度
      * @param text
@@ -69,5 +100,15 @@ public class QuickIndexBar extends View {
         Rect bounds = new Rect();
         paint.getTextBounds(text,0,1,bounds);
         return bounds.height();
+    }
+
+    public void setOnTouchLetterListener(OnTouchLetterListener listener){
+        this.listener = listener;
+    }
+    /**
+     * 触摸字母的一个监听器
+     */
+    public interface OnTouchLetterListener{
+        void onTouchLetter(String letter);
     }
 }
