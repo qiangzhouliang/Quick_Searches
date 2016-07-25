@@ -5,9 +5,14 @@
     android:layout_height="match_parent"
     tools:context="com.example.qzl.quick_searches.MainActivity">
 
+    <ListView
+        android:id="@+id/lv_mainactivity_data"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"></ListView>
     <com.example.qzl.quick_searches.QuickIndexBar
         android:id="@+id/quickindexbar"
         android:layout_width="30dp"
         android:layout_height="match_parent"
-        android:background="#ff0000"/>
+        android:layout_alignParentRight="true"
+        android:background="#B51421"/>
 </RelativeLayout>
